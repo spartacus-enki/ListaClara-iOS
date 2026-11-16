@@ -1,0 +1,19 @@
+Cloning into '/tmp/listaclara-preservation-test-jphr_pcv/ListaClara-iOS'...
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+PASS: OpenStep project parsed; all references, source membership, app/test targets, scheme and Info.plist validated.
+NOT VERIFIED: Swift parsing/typechecking, SDK linkage, Xcode build, tests, signing, device behavior.
+PASS: 162 Android source/reference files match the delivery snapshot.
+Permanent iOS checkout: /tmp/listaclara-preservation-test-jphr_pcv/ListaClara-iOS
+Independent backups: /tmp/listaclara-preservation-test-jphr_pcv/ListaClara-iOS-backups/20261116T181340Z-vtwzainz
+No external remote configured; no source publication performed.
+PASS: verified local clone, backups and installed manifest, clean Git, no remote and overwrite refusal.
+This was a disposable /tmp destination; preferred permanent path remains pending owner action.

@@ -19,6 +19,7 @@
 - Validación estructural `.xcodeproj`, esquema compartido, fuentes, Info.plist y bundle ID: pasa. No es compilación/typechecking Swift.
 - **6/6 pruebas de preparación CI**: estructura YAML compatible JSON, comandos existentes, ausencia de publicación/disparadores automáticos, rechazo de ruta Android/sobrescritura, rechazo de fuente comprimida o simulador como app y rechazo de rutas ZIP inseguras. Resultado en `local-ci-tests.txt`.
 - **7/7 pruebas aisladas de contrato backend**: resultado en `backend-contract-tests.txt`. Solo base temporal y ejecución ASGI interna sin hilos por limitaciones ya documentadas del ejecutor. No es prueba real de red, concurrencia, APK ni Swift.
+- Prueba real del instalador en un destino temporal independiente: pasa clonación, copias verificadas, manifiesto de fuentes, Git limpio/sin remoto y rechazo de sobrescritura. Evidencia en `conservation-test.txt`. No equivale a haber creado la ruta permanente.
 - Análisis de sintaxis bash de todos los scripts CI: pasa.
 - Instantánea de los 162 archivos Android de referencia: sin cambios respecto a la fase anterior. No se ejecutó Gradle ni se escribieron bases productivas.
 
