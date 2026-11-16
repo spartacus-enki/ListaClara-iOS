@@ -46,6 +46,11 @@ def verify(ipa, bundle_id, udid):
         assert 'arm64' in architecture, 'No arm64 device executable'
         subprocess.run(['codesign','--verify','--deep','--strict',str(app)], check=True, capture_output=True)
         profile = plistlib.loads(subprocess.check_output(['security','cms','-D','-i',str(app/'embedded.mobileprovision')]))
+        certificate_prefix = str(Path(temp)/'signing-certificate-')
+        subprocess.run(['codesign','--display','--extract-certificates',certificate_prefix,str(app)],check=True,capture_output=True)
+        certificate = Path(certificate_prefix+'0')
+        assert certificate.is_file(), 'No signing certificate; ad hoc local signatures are not accepted'
+        assert certificate.read_bytes() in profile.get('DeveloperCertificates', []), 'Signing certificate is not authorized by embedded profile'
         signature = plistlib.loads(subprocess.check_output(['codesign','-d','--entitlements',':-',str(app)], stderr=subprocess.DEVNULL))
         expiry = profile['ExpirationDate'].replace(tzinfo=datetime.timezone.utc)
         assert expiry > datetime.datetime.now(datetime.timezone.utc), 'Expired profile'

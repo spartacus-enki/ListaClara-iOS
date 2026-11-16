@@ -39,6 +39,9 @@ def conserve(bundle, original, destination, bundle_sha256):
     destination.chmod(0o700)
     subprocess.run(['git','-C',str(destination),'remote','remove','origin'],check=True)
     subprocess.run(['git','-C',str(destination),'fsck','--full'],check=True)
+    for line in (destination/'MANIFEST.sha256').read_text().splitlines():
+        expected, relative = line.split('  ', 1)
+        assert sha(destination/relative) == expected, 'Installed source manifest mismatch: '+relative
     subprocess.run(['python3',str(destination/'Tools/validate_delivery.py')],check=True)
     print('Permanent iOS checkout:', destination)
     print('Independent backups:', backup)
