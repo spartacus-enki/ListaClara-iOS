@@ -1,0 +1,3 @@
+PASS: OpenStep project parsed; all references, source membership, app/test targets, scheme and Info.plist validated.
+NOT VERIFIED: Swift parsing/typechecking, SDK linkage, Xcode build, tests, signing, device behavior.
+PASS: 162 Android source/reference files match the delivery snapshot.

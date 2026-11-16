@@ -1,0 +1,11 @@
+test_project_and_yaml_bundle_ids_match (__main__.ConfigurationTests.test_project_and_yaml_bundle_ids_match) ... ok
+test_refuse_existing_or_android_destination (__main__.ConfigurationTests.test_refuse_existing_or_android_destination) ... ok
+test_reject_simulator_payload (__main__.ConfigurationTests.test_reject_simulator_payload) ... ok
+test_reject_zip_traversal (__main__.ConfigurationTests.test_reject_zip_traversal) ... ok
+test_source_archive_cannot_masquerade_as_app (__main__.ConfigurationTests.test_source_archive_cannot_masquerade_as_app) ... ok
+test_yaml_compatible_json_workflows_and_no_publication (__main__.ConfigurationTests.test_yaml_compatible_json_workflows_and_no_publication) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.002s
+
+OK

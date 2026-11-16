@@ -1,6 +1,19 @@
+# Fase 1.2 — compilación en Codemagic
+
+Se reutiliza íntegramente la aplicación existente. Preparados repositorio Git local independiente, `codemagic.yaml`, pruebas macOS/simulador y exportación/verificación de IPA Ad Hoc. **No se ha ejecutado Codemagic, no hay IPA firmado y la conservación permanente requiere ejecutar el instalador con acceso normal del propietario.**
+
+- [Configuración y desbloqueo de Codemagic](Docs/phase1.2/CODEMAGIC.md)
+- [Instalación en iPhone sin Mac propia](Docs/phase1.2/INSTALL_IPHONE.md)
+- [Estado verificable, pruebas y bloqueos](Docs/phase1.2/REPORT.md)
+- [Conservación permanente](Docs/phase1.2/CONSERVATION.md)
+
+Versión de aplicación: **1.0.0**; compilación local de preparación: **2**. Codemagic usa `PROJECT_BUILD_NUMBER + 1` para distinguir compilaciones entre flujos. Fase 1.2 es el número del trabajo, no una nueva versión funcional de la app.
+
+---
+
 # Lista Clara iOS — Phase 1.0 candidate
 
-Independent native SwiftUI iPhone application, version **1.0.0 (1)**, deployment target **iOS 16**. Uses the existing SPARTA `/api/v1` backend. No Android files, production services, authentication rules or production databases are changed.
+Independent native SwiftUI iPhone application, version **1.0.0 (2)**, deployment target **iOS 16**. Uses the existing SPARTA `/api/v1` backend. No Android files, production services, authentication rules or production databases are changed.
 
 **Status:** source and a real Xcode app/test project delivered. Xcode/Swift are unavailable on SPARTA; no iOS build, Swift test pass, signing, installation, device test or full visual parity is claimed.
 

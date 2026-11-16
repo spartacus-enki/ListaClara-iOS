@@ -1,0 +1,75 @@
+{
+  "workflows": {
+    "ios-validate": {
+      "name": "Lista Clara iOS — tests and unsigned device build",
+      "instance_type": "mac_mini_m2",
+      "max_build_duration": 60,
+      "environment": {
+        "xcode": "latest",
+        "vars": {
+          "IOS_BUNDLE_ID": "mx.listaclara.ios",
+          "IOS_VERSION": "1.0.0"
+        }
+      },
+      "scripts": [
+        {
+          "name": "Check Xcode/project and capture build metadata",
+          "script": "bash ci/prepare.sh"
+        },
+        {
+          "name": "Run Swift Core and iPhone simulator XCTest",
+          "script": "bash ci/test.sh"
+        },
+        {
+          "name": "Compile for physical iPhone (unsigned; not installable)",
+          "script": "bash ci/build_unsigned.sh"
+        }
+      ],
+      "artifacts": [
+        "build/logs/**",
+        "build/results/*.xcresult",
+        "build/evidence/**"
+      ]
+    },
+    "ios-adhoc": {
+      "name": "Lista Clara iOS — signed Ad Hoc IPA (registered iPhone)",
+      "instance_type": "mac_mini_m2",
+      "max_build_duration": 60,
+      "environment": {
+        "xcode": "latest",
+        "groups": [
+          "lista_clara_ios_adhoc"
+        ],
+        "vars": {
+          "IOS_BUNDLE_ID": "mx.listaclara.ios",
+          "IOS_VERSION": "1.0.0"
+        },
+        "ios_signing": {
+          "distribution_type": "ad_hoc",
+          "bundle_identifier": "mx.listaclara.ios"
+        }
+      },
+      "scripts": [
+        {
+          "name": "Check Xcode/project and capture build metadata",
+          "script": "bash ci/prepare.sh"
+        },
+        {
+          "name": "Run Swift Core and iPhone simulator XCTest",
+          "script": "bash ci/test.sh"
+        },
+        {
+          "name": "Archive, export and verify signed IPA",
+          "script": "bash ci/build_ipa.sh"
+        }
+      ],
+      "artifacts": [
+        "build/logs/**",
+        "build/results/*.xcresult",
+        "build/evidence/**",
+        "build/ios/ipa/*.ipa",
+        "build/ios/xcarchive/*.xcarchive/dSYMs/**"
+      ]
+    }
+  }
+}

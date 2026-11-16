@@ -1,3 +1,5 @@
+> Documento de la fase inicial. La ruta sin Mac propia y el estado actual están en [Fase 1.2](phase1.2/REPORT.md).
+
 # Build, signing and iPhone installation
 
 ## Required environment

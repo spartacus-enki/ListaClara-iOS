@@ -30,7 +30,7 @@ for target in ['project','app','test']:
     for config in ['Debug','Release']:
         settings={'SWIFT_VERSION':'5.0','IPHONEOS_DEPLOYMENT_TARGET':'16.0','SDKROOT':'iphoneos','TARGETED_DEVICE_FAMILY':'1','CLANG_ENABLE_MODULES':'YES'}
         settings.update({'SWIFT_OPTIMIZATION_LEVEL':'-Onone' if config=='Debug' else '-O','SWIFT_ACTIVE_COMPILATION_CONDITIONS':'DEBUG' if config=='Debug' else '', 'ENABLE_TESTABILITY':'YES' if config=='Debug' else 'NO'})
-        if target=='app': settings.update({'PRODUCT_NAME':'ListaClara','PRODUCT_MODULE_NAME':'ListaClaraCore','PRODUCT_BUNDLE_IDENTIFIER':'mx.listaclara.ios','INFOPLIST_FILE':'Sources/App/Info.plist','CODE_SIGN_STYLE':'Automatic','MARKETING_VERSION':'1.0.0','CURRENT_PROJECT_VERSION':'1','GENERATE_INFOPLIST_FILE':'NO'})
+        if target=='app': settings.update({'PRODUCT_NAME':'ListaClara','PRODUCT_MODULE_NAME':'ListaClaraCore','PRODUCT_BUNDLE_IDENTIFIER':'mx.listaclara.ios','INFOPLIST_FILE':'Sources/App/Info.plist','CODE_SIGN_STYLE':'Automatic','MARKETING_VERSION':'1.0.0','CURRENT_PROJECT_VERSION':'2','GENERATE_INFOPLIST_FILE':'NO'})
         if target=='test': settings.update({'PRODUCT_NAME':'ListaClaraTests','PRODUCT_BUNDLE_IDENTIFIER':'mx.listaclara.ios.tests','GENERATE_INFOPLIST_FILE':'YES','TEST_HOST':'$(BUILT_PRODUCTS_DIR)/ListaClara.app/ListaClara','BUNDLE_LOADER':'$(TEST_HOST)','CODE_SIGN_STYLE':'Automatic'})
         pairs=' '.join(k+' = "'+v+'";' for k,v in settings.items())
         ids.append(add(target+config, '{isa = XCBuildConfiguration; buildSettings = {'+pairs+'}; name = '+config+';}'))

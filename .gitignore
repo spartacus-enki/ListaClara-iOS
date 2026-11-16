@@ -10,3 +10,9 @@ xcuserdata/
 .env
 __pycache__/
 .pytest_cache/
+
+*.p8
+*.key
+*.pem
+*.cer
+*.bundle

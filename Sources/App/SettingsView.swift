@@ -66,7 +66,7 @@ struct SettingsView: View {
                 }
                 Text("Los registros con conflicto se conservan hasta que elijas una versión.").font(.caption)
             }
-            Section("Versión") { Text("Lista Clara iOS 1.0.0 (1) · API v1") }
+            Section("Versión") { Text("Lista Clara iOS \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—")) · API v1") }
         }.navigationTitle("Ajustes")
             .confirmationDialog("Descartar el envío local y volver a consultar el servidor. Un envío que ya llegó al servidor no se revierte.", isPresented: Binding(get: { pendingOperation != nil }, set: { if !$0 { pendingOperation = nil } }), titleVisibility: .visible) {
                 Button("Descartar envío", role: .destructive) { if let pendingOperation { model.discardFamilyOperation(pendingOperation) }; pendingOperation = nil }
