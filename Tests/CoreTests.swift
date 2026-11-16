@@ -125,6 +125,94 @@ final class CoreTests: XCTestCase {
         XCTAssertEqual(next.first, format.date(from: "2026-03-08T07:30:00Z"))
     }
 
+    private func weekly(_ start: String, zone: String = "America/New_York", weekdays: [Int] = [7]) -> JSON {
+        var e = event("WEEKLY")
+        e["zone"] = .string(zone); e["days"] = .null
+        e["weekdays"] = .array(weekdays.map { .number(Double($0)) })
+        e["start"] = .ms(ISO8601DateFormatter().date(from: start)!)
+        return e
+    }
+    private func iso(_ value: String) -> Date { ISO8601DateFormatter().date(from: value)! }
+    func testWeeklySpringGapDoesNotShiftFollowingWeeks() {
+        let e = weekly("2026-03-01T07:30:00Z")
+        let actual: [Date] = eventDates(e, after: iso("2026-03-08T00:00:00Z"), limit: 2)
+        let expected: [Date] = [iso("2026-03-08T07:30:00Z"), iso("2026-03-15T06:30:00Z")]
+        XCTAssertEqual(actual, expected)
+    }
+    func testWeeklyFallOverlapUsesEarlierInstant() {
+        let e = weekly("2026-10-25T05:30:00Z") // 01:30 in the saved zone.
+        let actual: [Date] = eventDates(e, after: iso("2026-11-01T00:00:00Z"), limit: 2)
+        let expected: [Date] = [iso("2026-11-01T05:30:00Z"), iso("2026-11-08T06:30:00Z")]
+        XCTAssertEqual(actual, expected)
+    }
+    func testWeeklyFallDoesNotDeliverSecondFoldAfterFirstHasPassed() {
+        let e = weekly("2026-10-25T05:30:00Z")
+        let next = eventDates(e, after: iso("2026-11-01T06:00:00Z"), limit: 1)
+        XCTAssertEqual(next.first, iso("2026-11-08T06:30:00Z"))
+    }
+    func testWeeklyNormalDateAndMidnightKeepTheirClock() {
+        let e = weekly("2026-03-15T06:30:00Z") // 02:30 after the transition.
+        XCTAssertEqual(eventDates(e, after: iso("2026-03-22T00:00:00Z"), limit: 1).first,
+                       iso("2026-03-22T06:30:00Z"))
+        let midnight = weekly("2026-03-16T00:00:00Z", zone: "UTC", weekdays: [1])
+        XCTAssertEqual(eventDates(midnight, after: iso("2026-03-15T23:59:59Z"), limit: 1).first,
+                       iso("2026-03-16T00:00:00Z"))
+    }
+    func testWeeklyUsesSavedZoneWhenDeviceZoneDiffers() {
+        let previous = NSTimeZone.default
+        NSTimeZone.default = TimeZone(identifier: "Asia/Tokyo")!
+        defer { NSTimeZone.default = previous }
+        let e = weekly("2026-03-01T07:30:00Z")
+        XCTAssertEqual(eventDates(e, after: iso("2026-03-08T00:00:00Z"), limit: 1).first,
+                       iso("2026-03-08T07:30:00Z"))
+    }
+    func testWeeklyHalfHourSpringGapAdvancesByActualGap() {
+        let e = weekly("2026-09-26T15:45:00Z", zone: "Australia/Lord_Howe") // 02:15.
+        XCTAssertEqual(eventDates(e, after: iso("2026-10-03T00:00:00Z"), limit: 1).first,
+                       iso("2026-10-03T15:45:00Z")) // 02:45, not the first valid 02:30.
+    }
+    func testWeeklyHalfHourFallOverlapChoosesEarlierInstant() {
+        let e = weekly("2026-03-28T14:45:00Z", zone: "Australia/Lord_Howe") // 01:45.
+        XCTAssertEqual(eventDates(e, after: iso("2026-04-04T00:00:00Z"), limit: 1).first,
+                       iso("2026-04-04T14:45:00Z"))
+    }
+    func testOtherRecurrencesRemainAbsoluteAcrossDST() {
+        var e = weekly("2026-03-07T13:00:00Z", weekdays: [1,2,3,4,5,6,7])
+        e["repeat"] = .string("INTERVAL"); e["hours"] = .number(24)
+        let actual: [Date] = eventDates(e, after: iso("2026-03-07T13:00:00Z"), limit: 2)
+        let expected: [Date] = [iso("2026-03-08T13:00:00Z"), iso("2026-03-09T13:00:00Z")]
+        XCTAssertEqual(actual, expected)
+        e["repeat"] = .string("ONCE")
+        XCTAssertEqual(eventDates(e, after: iso("2026-03-07T12:59:59Z"), limit: 1).first,
+                       iso("2026-03-07T13:00:00Z"))
+        XCTAssertTrue(eventDates(e, after: iso("2026-03-07T13:00:00Z")).isEmpty)
+    }
+    func testWeeklyDurationEndsAtSavedZoneMidnightAcrossDST() {
+        var e = weekly("2026-03-01T07:30:00Z")
+        e["days"] = .number(7)
+        XCTAssertTrue(eventDates(e, after: iso("2026-03-08T00:00:00Z")).isEmpty)
+        e["days"] = .number(8)
+        XCTAssertEqual(eventDates(e, after: iso("2026-03-08T00:00:00Z"), limit: 1).first,
+                       iso("2026-03-08T07:30:00Z"))
+    }
+    func testWeeklyMatchesAndroidAtZoneReferenceCases() {
+        // Expected instants follow Events.kt day.atTime(startTime).atZone(tz).
+        // Tools/AndroidWeeklyOracle.java evaluates the same Java API without Android writes.
+        let cases: [(zone: String, start: String, after: String, expected: String)] = [
+            ("America/New_York", "2026-03-01T07:30:00Z", "2026-03-08T00:00:00Z", "2026-03-08T07:30:00Z"),
+            ("America/New_York", "2026-10-25T05:30:00Z", "2026-11-01T00:00:00Z", "2026-11-01T05:30:00Z"),
+            ("America/New_York", "2026-03-15T06:30:00Z", "2026-03-22T00:00:00Z", "2026-03-22T06:30:00Z"),
+            ("Europe/Berlin", "2026-03-22T01:15:00Z", "2026-03-29T00:00:00Z", "2026-03-29T01:15:00Z"),
+            ("Australia/Lord_Howe", "2026-09-26T15:45:00Z", "2026-10-03T00:00:00Z", "2026-10-03T15:45:00Z"),
+            ("Australia/Lord_Howe", "2026-03-28T14:45:00Z", "2026-04-04T00:00:00Z", "2026-04-04T14:45:00Z")
+        ]
+        for c in cases {
+            let e = weekly(c.start, zone: c.zone)
+            let next = eventDates(e, after: iso(c.after), limit: 1)
+            XCTAssertEqual(next.first, iso(c.expected), c.zone)
+        }
+    }
+
     func testIdentityMismatchStopsBeforeUpload() async throws {
         let mock = MockTransport([(.object(["protocol": .number(1), "serverId": .string("other"), "id": .string("u")]), 200)])
         do { try await Synchronizer(api: API(base: URL(string: "https://sparta.example")!, transport: mock), identity: "s/u").run(load: { Ledger() }, save: { _ in }); XCTFail("must stop") } catch {}

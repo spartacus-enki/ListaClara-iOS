@@ -1,5 +1,9 @@
 # Independent iOS release history
 
+## Fase 1.5 — política DST compatible con Android
+
+Reemplazada únicamente la resolución de hora semanal que redondeaba huecos DST. Ahora usa offsets reales de la zona guardada: avanza por la duración del hueco y elige el primer instante de un solapamiento, como Java atZone. Expectativa original conservada; diez nuevas regresiones, 22 casos XCTest preparados. Referencias Python/IANA verificadas; Swift/Xcode y el oracle Java pendientes por falta de herramientas locales. Detalles en Docs/phase1.5/DST_POLICY.md.
+
 ## Fase 1.4 — corrección de typechecking en XCTest
 
 Separadas dos comparaciones de arrays temporales en variables explícitas `[TimeInterval]`; se conservan todos los valores y las doce pruebas. Corrige la expresión indicada por el error de Xcode 26.6/Swift 6.3.3 en el build 6afb636601609fea8f691b8a. Sin cambios productivos ni de configuración. La nueva compilación real sigue pendiente; ver Docs/phase1.4/XCODE_TYPECHECK_FIX.md.
