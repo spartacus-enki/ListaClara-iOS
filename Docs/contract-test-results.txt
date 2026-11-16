@@ -1,0 +1,14 @@
+Backend source SHA256: 8c94d190b9c7476c7408a5e5e6cd3f03111e194a7e9852cf422a752e5aee5c5c
+Database: disposable temporary test database; no network or production database access
+test_01_login_bearer_alias_and_protocol (__main__.ContractTests.test_01_login_bearer_alias_and_protocol) ... ok
+test_02_record_roundtrip_conflict_idempotency_tombstone (__main__.ContractTests.test_02_record_roundtrip_conflict_idempotency_tombstone) ... ok
+test_03_all_synced_payloads_and_event_revision (__main__.ContractTests.test_03_all_synced_payloads_and_event_revision) ... ok
+test_04_paginated_change_feed_and_restore_guard (__main__.ContractTests.test_04_paginated_change_feed_and_restore_guard) ... ok
+test_05_family_permissions_completion_recurrence_history (__main__.ContractTests.test_05_family_permissions_completion_recurrence_history) ... ok
+test_06_native_clients_cannot_use_web_admin (__main__.ContractTests.test_06_native_clients_cannot_use_web_admin) ... ok
+test_07_payload_fixtures_match_swift_keys (__main__.ContractTests.test_07_payload_fixtures_match_swift_keys) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.297s
+
+OK
