@@ -46,14 +46,21 @@ final class CoreTests: XCTestCase {
     }
     func testIntervalExclusiveEndAndStrictAfter() {
         let dates = eventDates(event(), after: Date(timeIntervalSince1970: 0))
-        XCTAssertEqual(dates.map(\.timeIntervalSince1970), [28800, 57600])
+        let actual: [TimeInterval] = dates.map(\.timeIntervalSince1970)
+        let expected: [TimeInterval] = [28_800.0, 57_600.0]
+        XCTAssertEqual(actual, expected)
         XCTAssertTrue(eventDates(event("ONCE"), after: Date(timeIntervalSince1970: 0)).isEmpty)
     }
     func testWeeklyUsesStartClockInsteadOfLegacyTimes() {
         var e = event("WEEKLY"); e["days"] = .null; e["start"] = .number(4 * 86400000 + 10 * 3600000)
         e["weekdays"] = .array([.number(1)]); e["times"] = .array([.string("23:59")])
         let next = eventDates(e, after: Date(timeIntervalSince1970: 0), limit: 2)
-        XCTAssertEqual(next.map(\.timeIntervalSince1970), [4 * 86400 + 10 * 3600, 11 * 86400 + 10 * 3600])
+        let actual: [TimeInterval] = next.map(\.timeIntervalSince1970)
+        let expected: [TimeInterval] = [
+            4.0 * 86_400.0 + 10.0 * 3_600.0,
+            11.0 * 86_400.0 + 10.0 * 3_600.0
+        ]
+        XCTAssertEqual(actual, expected)
     }
     func testSilencedOccurrenceAndQueueBudget() {
         var ledger = Ledger(); var e = event(); e["days"] = .null
