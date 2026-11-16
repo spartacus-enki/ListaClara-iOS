@@ -32,9 +32,21 @@ class ConfigurationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             with self.assertRaises(AssertionError): installer.safe_destination(Path(temp))
             allowed=Path(temp)/'independent-ios'
-            self.assertEqual(installer.safe_destination(allowed),allowed)
+            self.assertEqual(installer.safe_destination(allowed),allowed.resolve())
         for path in [installer.ANDROID, installer.ANDROID/'new-ios', installer.ANDROID.parent]:
             with self.assertRaises(AssertionError): installer.safe_destination(path)
+    def test_safe_destination_resolves_symlinked_parent(self):
+        # macOS temporary paths may be reached through a symlink. The installer
+        # intentionally returns a canonical path; this must not fail preflight.
+        with tempfile.TemporaryDirectory() as temp:
+            base=Path(temp).resolve()
+            real=base/'real'; real.mkdir()
+            alias=base/'alias'; alias.symlink_to(real,target_is_directory=True)
+            allowed=alias/'independent-ios'
+            self.assertEqual(installer.safe_destination(allowed),real/'independent-ios')
+            self.assertFalse(allowed.exists())
+            # Resolving an alias must still reject an already-existing directory.
+            with self.assertRaises(AssertionError): installer.safe_destination(alias)
     def test_source_archive_cannot_masquerade_as_app(self):
         with tempfile.TemporaryDirectory() as temp:
             folder=Path(temp); fixture=folder/'source.zip'; output=folder/'out'; output.mkdir()

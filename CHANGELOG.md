@@ -1,5 +1,9 @@
 # Independent iOS release history
 
+## Preparación — corrección de portabilidad del preflight
+
+Corregida la comparación de rutas temporales resueltas en las pruebas CI; añadida regresión para padres con enlace simbólico conservando el rechazo de directorios existentes. Reproducción local anterior: salida 1; tras la corrección: siete pruebas pasan con ruta normal y con alias. No se confirma la causa del build 6afb5ce701609fea8f6918ec sin su log. No se declara éxito Xcode/Codemagic. Detalles en Docs/phase1.2/PREFLIGHT_FIX.md.
+
 ## 1.0.0 (2) — Fase 1.2 — cloud-build preparation
 
 Preserved original archive and Git baseline. Added manual Codemagic validation/Ad Hoc workflows, real macOS tests/device compilation, signature/profile/registered-device checks, runner evidence, independent Git bundle and an owner-run permanent installer. App screens/backend remain unchanged; Settings reads actual bundle version/build instead of a hardcoded number. No cloud build, signed IPA or physical installation is claimed.
